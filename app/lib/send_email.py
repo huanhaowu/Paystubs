@@ -23,7 +23,7 @@ def send_payroll_email(df: pd.DataFrame, country: str, company: str) -> List[Dic
 
     for index, row in df.iterrows():
         recipient_email: str = row['email']
-        company_name: str  = company  # Replace with your company name
+        company_name: str = company if company else "fakecompany"
 
         # Generate PDF
         pdf_content: Optional[bytes] = generate_pdf(

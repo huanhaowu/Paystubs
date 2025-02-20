@@ -61,6 +61,9 @@ def generate_pdf(
         logo_filename: str = f"{company_name}.png"
         logo_path: str = os.path.join(logo_directory, logo_filename)
 
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join(logo_directory, "default.png")
+
         if os.path.exists(logo_path):
             pdf.drawImage(
                 logo_path,
