@@ -53,8 +53,26 @@ def send_payroll_email(df: pd.DataFrame, country: str, company: str) -> List[Dic
 
         if country == 'do':
             subject: str = "Comprobante de Pago"
+            body: str = f"""
+Estimado/a {row['full_name']},
+                
+Este correo es enviado de parte de {company_name}.
+Adjunto encontrará su comprobante de pago correspondiente al período {row['period'].strftime("%Y-%m-%d")}.
+                
+Saludos cordiales,
+{company_name}
+            """
         else:
             subject: str = "Paystub Payment"
+            body: str = f"""
+Dear {row['full_name']},
+    
+This email is from {company_name}.
+Attached is your paystub for the period {row['period'].strftime("%Y-%m-%d")}.
+    
+Best regards,
+{company_name}
+            """
 
         # Create email
         msg = MIMEMultipart()
@@ -66,6 +84,7 @@ def send_payroll_email(df: pd.DataFrame, country: str, company: str) -> List[Dic
         pdf_attachment = MIMEApplication(pdf_content, _subtype="pdf")
         pdf_attachment.add_header('Content-Disposition', 'attachment', filename=f"{row['full_name']}_paystub.pdf")
         msg.attach(pdf_attachment)
+        msg.attach(MIMEText(body, 'plain'))
 
         # Send email
         try:
