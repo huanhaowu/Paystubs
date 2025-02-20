@@ -53,43 +53,14 @@ def send_payroll_email(df: pd.DataFrame, country: str, company: str) -> List[Dic
 
         if country == 'do':
             subject: str = "Comprobante de Pago"
-            body: str = f"""
-                    Comprobante de Pago para {row['full_name']}:
-                    Email: {row['email']}
-                    Posición: {row['position']}
-                    Periodo: {row['period'].strftime('%Y-%m-%d')}
-
-                    SFS: {row['health_discount_amount']}
-                    AFP: {row['social_discount_amount']}
-                    ISR: {row['taxes_discount_amount']}
-                    Otros: {row['other_discount_amount']}
-                    Salario Bruto: {row['gross_salary']}
-                    Pago Bruto: {row['gross_payment']}
-                    Pago Neto: {row['net_payment']}
-                    """
         else:
             subject: str = "Paystub Payment"
-            body: str = f"""
-                    Paystub Payment for {row['full_name']}:
-                    Email: {row['email']}
-                    Position: {row['position']}
-                    Period: {row['period'].strftime('%Y-%m-%d')}
-
-                    Health Insurance: {row['health_discount_amount']}
-                    Social Security: {row['social_discount_amount']}
-                    Taxes: {row['taxes_discount_amount']}
-                    Others: {row['other_discount_amount']}
-                    Gross Salary: {row['gross_salary']}
-                    Gross Payment: {row['gross_payment']}
-                    Net Payment: {row['net_payment']}
-                    """
 
         # Create email
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = recipient_email
         msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
 
         # Attach PDF
         pdf_attachment = MIMEApplication(pdf_content, _subtype="pdf")
