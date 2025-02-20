@@ -1,8 +1,9 @@
-from io import BytesIO
-from reportlab.pdfgen import canvas
 import os
-from datetime import datetime
+from io import BytesIO
 from typing import Optional
+from datetime import datetime
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import LETTER
 
 def generate_pdf(
     full_name: str,
@@ -20,14 +21,14 @@ def generate_pdf(
     country: str
 ) -> Optional[bytes]:
     buffer: BytesIO = BytesIO()
-    pdf = canvas.Canvas(buffer)
+    pdf = canvas.Canvas(buffer, pagesize=LETTER)
+    date_str = period.strftime("%Y-%m-%d")
 
-    # Titles and labels based on country
-    if country == 'do':
-        title: str = f"{company_name} - Comprobante de Pago"
-        period_label: str = "Periodo"
+    # Títulos y etiquetas basados en el país
+    if country.lower() == 'do':
+        title: str = f"Comprobante de pago"
+        subtitle: str = f"({date_str})"
         name_label: str = "Nombre"
-        email_label: str = "Email"
         position_label: str = "Posición"
         gross_salary_label: str = "Salario Bruto"
         gross_payment_label: str = "Pago Bruto"
@@ -39,10 +40,9 @@ def generate_pdf(
         total_discounts_label: str = "Total Descuentos"
         net_payment_label: str = "Pago Neto"
     else:
-        title = f"{company_name} - Paystub Payment"
-        period_label = "Period"
+        title = f"Paystub Payment"
+        subtitle = f"({date_str})"
         name_label = "Full Name"
-        email_label = "Email"
         position_label = "Position"
         gross_salary_label = "Gross Salary"
         gross_payment_label = "Gross Payment"
@@ -55,60 +55,84 @@ def generate_pdf(
         net_payment_label = "Net Payment"
 
     try:
-        # Title
-        pdf.setFont("Helvetica-Bold", 14)
-        pdf.drawString(200, 800, title)
-
-        # Dynamically set the logo path based on company name
-        base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # Get 'app' directory
-        logo_directory: str = os.path.join(base_dir, "static")  # Adjusted to match your structure
-        logo_filename: str = f"{company_name}.png"  # Convert company name to filename
+        # ---------- LOGO ----------
+        base_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        logo_directory: str = os.path.join(base_dir, "static")
+        logo_filename: str = f"{company_name}.png"
         logo_path: str = os.path.join(logo_directory, logo_filename)
 
-        # Add company logo if it exists
         if os.path.exists(logo_path):
-            pdf.drawImage(logo_path, 200, 750, width=150, height=50, preserveAspectRatio=True, mask='auto')
+            pdf.drawImage(
+                logo_path,
+                260, 700,
+                width=100,
+                height=50,
+                preserveAspectRatio=True,
+                mask='auto'
+            )
+
+        # ---------- ENCABEZADO / TÍTULOS ----------
+        pdf.setFont("Helvetica-Bold", 20)
+        if country.lower() == 'do':
+            pdf.drawString(190, 680, title)
         else:
-            print(f"Warning: Logo for '{company_name}' not found at {logo_path}")
+            pdf.drawString(230, 680, title)
 
-        # General Information
-        pdf.setFont("Helvetica", 12)
-        pdf.drawString(100, 700, f"{period_label}: {period}")
-        pdf.drawString(100, 680, f"{name_label}: {full_name}")
-        pdf.drawString(100, 660, f"{email_label}: {email}")
-        pdf.drawString(100, 640, f"{position_label}: {position}")
+        pdf.setFont("Helvetica", 14)
+        pdf.drawString(260, 660, subtitle)
 
-        # Salary Details
-        pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawString(100, 610, f"{gross_salary_label}:")
-        pdf.drawString(250, 610, f"{gross_salary}")
+        # ---------- DATOS PERSONALES ----------
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 580, f"{name_label}:")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(150, 580, full_name)
 
-        pdf.drawString(100, 590, f"{gross_payment_label}:")
-        pdf.drawString(250, 590, f"{gross_payment}")
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 560, f"{position_label}:")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(150, 560, position)
 
-        # Discounts
-        pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawString(100, 560, f"{discounts_label}:")
+        # ---------- DETALLES SALARIALES ----------
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 510, f"{gross_salary_label}:")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(190, 510, f"{gross_salary:.2f}")
 
-        pdf.setFont("Helvetica", 12)
-        pdf.drawString(120, 540, f"{health_insurance_label}: {social_discount_amount}")
-        pdf.drawString(120, 520, f"{social_security_label}: {health_discount_amount}")
-        pdf.drawString(120, 500, f"{taxes_label}: {taxes_discount_amount}")
-        pdf.drawString(120, 480, f"{others_label}: {other_discount_amount}")
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 490, f"{gross_payment_label}:")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(190, 490, f"{gross_payment:.2f}")
 
-        total_discounts: float = social_discount_amount + health_discount_amount + taxes_discount_amount + other_discount_amount
-        pdf.drawString(120, 460, f"{total_discounts_label}: {total_discounts}")
+        # ---------- DESCUENTOS / DISCOUNTS ----------
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 460, f"{discounts_label}:")
 
-        # Net Payment
-        pdf.setFont("Helvetica-Bold", 12)
-        pdf.drawString(100, 430, f"{net_payment_label}:")
-        pdf.drawString(250, 430, f"{net_payment}")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(70, 440, f"{health_insurance_label}:   {health_discount_amount:.2f}")
+        pdf.drawString(70, 420, f"{social_security_label}:   {social_discount_amount:.2f}")
+        pdf.drawString(70, 400, f"{taxes_label}:   {taxes_discount_amount:.2f}")
+        pdf.drawString(70, 380, f"{others_label}:   {other_discount_amount:.2f}")
+
+        total_discounts = (
+                health_discount_amount
+                + social_discount_amount
+                + taxes_discount_amount
+                + other_discount_amount
+        )
+        pdf.drawString(70, 360, f"{total_discounts_label}:   {total_discounts:.2f}")
+
+        # ---------- PAGO NETO / NET PAYMENT ----------
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawString(50, 330, f"{net_payment_label}:")
+        pdf.setFont("Helvetica", 16)
+        pdf.drawString(180, 330, f"{net_payment:.2f}")
 
         pdf.showPage()
         pdf.save()
 
         buffer.seek(0)
         return buffer.getvalue()
+
     except Exception as e:
         print(f"Failed to generate PDF: {e}")
         return None
