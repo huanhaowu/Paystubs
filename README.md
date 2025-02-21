@@ -34,9 +34,6 @@ python app.py
 ## Docker Integration
 This project includes a Dockerfile for containerization. The Docker image is uploaded to Docker Hub, allowing for easy deployment and scalability.
 
-
-## Using Docker
-
 To build and run the Docker container:
 
 ### Build the Docker image
@@ -50,7 +47,7 @@ docker build -t paystubs-assessment .
 docker run -d -p 5000:5000 paystubs-assessment
 ```
 
-## Docker Hub
+### Docker Hub
 
 The Docker image for this project is available on Docker Hub. You can pull the image using the following command:
 ```bash
