@@ -98,7 +98,6 @@ Best regards,
                 "status": "success",
                 "timestamp": datetime.now(dr_tz).strftime('%Y-%m-%d %H:%M:%S')
             })
-            print(f"Email sent successfully to {recipient_email}")
         except Exception as e:
             email_results.append({
                 "email": recipient_email,
