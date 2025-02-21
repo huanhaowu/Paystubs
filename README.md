@@ -19,19 +19,19 @@ This project includes a Dockerfile for containerization. The Docker image is upl
 
 ### Installation
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/huanhaowu/Paystubs-Assessment.git
-   cd Paystubs-Assessment
-   ```
+```bash
+git clone https://github.com/huanhaowu/Paystubs-Assessment.git
+cd Paystubs-Assessment
+```
 
 2. Install the required Python packages:
-  ```bash
-   pip install -r requirements.txt
-  ```
+```bash
+pip install -r requirements.txt
+```
 
 3. Run  the application
 ```bash
-   python app.py
+python app.py
 ```
 
 ## Using Docker
