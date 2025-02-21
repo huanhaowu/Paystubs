@@ -9,9 +9,6 @@ Paystubs-Assessment is a Python-based application designed to process payroll da
 - Send paystubs via email
 - Dockerized for easy deployment
 
-## Docker Integration
-This project includes a Dockerfile for containerization. The Docker image is uploaded to Docker Hub, allowing for easy deployment and scalability.
-
 ## Getting Started
 ### Prerequisites
 - Python 3.x
@@ -33,6 +30,10 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+
+## Docker Integration
+This project includes a Dockerfile for containerization. The Docker image is uploaded to Docker Hub, allowing for easy deployment and scalability.
+
 
 ## Using Docker
 
