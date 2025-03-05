@@ -17,7 +17,7 @@ Paystubs is a Python-based application designed to process payroll data and gene
 ### Installation
 1. Clone the repository:
 ```bash
-git clone https://github.com/huanhaowu/Paystubs-Assessment.git
+git clone https://github.com/huanhaowu/Paystubs.git
 cd Paystubs-Assessment
 ```
 
