@@ -1,7 +1,7 @@
-# Paystubs-Assessment
+# Paystubs
 
 ## Project Overview
-Paystubs-Assessment is a Python-based application designed to process payroll data and generate paystubs. This project includes a set of scripts and functionalities to handle payroll calculations, generate PDF paystubs, and send them via email.
+Paystubs is a Python-based application designed to process payroll data and generate paystubs. This project includes a set of scripts and functionalities to handle payroll calculations, generate PDF paystubs, and send them via email.
 
 ## Features
 - Process payroll data from CSV files
